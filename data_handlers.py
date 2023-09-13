@@ -20,7 +20,7 @@ def fetch_data(tickers, start_date, end_date, validation_start):
 
     data = data.swaplevel(axis=1)
     for ticker in tickers:
-        close_data = data.loc[:, (ticker, 'Close')]  # Using .loc to access the 'Close' column
+        close_data = data.loc[:, (ticker, 'Close')]
 
         # Calculate the 5-day moving average for each stock
         moving_average = close_data.rolling(window=5).mean()
@@ -28,8 +28,12 @@ def fetch_data(tickers, start_date, end_date, validation_start):
         # Assign the moving average values back to the DataFrame
         data.loc[:, (ticker, '5-day Moving Average')] = moving_average
     desired_order = ['Adj Close', 'Close', 'High', 'Low', 'Open', '5-day Moving Average', 'Volume',]
+
     data = data.swaplevel(axis=1)
     data = data[desired_order]
+    data['Adj Close'] = data['Close']  # Erstatt for å sjekke at featuren ikke lekekr info
+    data['5-day Moving Average'] = data['Close'] # Erstatt for å sjekke at featuren ikke lekekr info
+
     data = data.swaplevel(axis=1)
     
     # Split data into training and validation datasets

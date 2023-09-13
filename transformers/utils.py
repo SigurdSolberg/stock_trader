@@ -19,12 +19,16 @@ def custom_loss(predictions,targets, fee = 0.01):
     return torch.abs(predictions - targets)#torch.sum(torch.abs(targets[wrong])) - torch.sum(torch.abs(targets[~wrong])) #+ fee
 
 def trading_earnings(predictions, targets, alpha=0.5, fee=0.0015):
+
+    #print(min(predictions), max(predictions))
+
     # Identify where the absolute predictions are smaller than the fee
     no_trade = torch.abs(predictions) < fee
     
     # Calculate earnings for trading scenarios
     trading_earnings = torch.where(predictions * targets > 0, torch.abs(targets) - fee, -torch.abs(targets) - fee)
     trades_made = trading_earnings[~no_trade].cpu().detach().numpy()
+
     return list(trades_made) if len(trades_made) > 0 else [0]
 
 def mean_confidence_interval(data, confidence=0.95):
